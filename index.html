@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSIS MAN 6 JAKARTA - Atharva</title>
+    
+    <!-- Fonts for the Sticker Pop-Art Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Titan One for super thick headers, Chewy for playful text, Fredoka for readable bouncy body -->
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Fredoka:wght@400;500;600;700&family=Titan+One&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons (Phosphor) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Fredoka', 'sans-serif'],
+                        display: ['Titan One', 'cursive'],
+                        script: ['Chewy', 'cursive'],
+                    },
+                    colors: {
+                        pop: {
+                            blue: '#325ab3',
+                            darkblue: '#234794',
+                            red: '#e53e30',
+                            yellow: '#fed201',
+                            green: '#02a368',
+                            pink: '#e84c8a',
+                        }
+                    },
+                    animation: {
+                        'float-slow': 'float 6s ease-in-out infinite',
+                        'float-fast': 'float 4s ease-in-out infinite reverse',
+                        'wiggle': 'wiggle 3s ease-in-out infinite',
+                        'spin-slow': 'spin 12s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-15px) rotate(4deg)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-5deg)' },
+                            '50%': { transform: 'rotate(5deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base styles & Checkerboard Background */
+        body {
+            background-color: #325ab3;
+            /* Conic gradient trick for checkerboard */
+            background-image: conic-gradient(from 0deg, #234794 90deg, transparent 90deg 180deg, #234794 180deg 270deg, transparent 270deg 360deg);
+            background-size: 120px 120px;
+            background-position: 0 0;
+            color: #000;
+            overflow-x: hidden;
+        }
+
+        /* Neo-Brutalism (Sticker/Pop-Art) Utilities */
+        .neo-card {
+            background-color: #ffffff;
+            border: 4px solid #000000;
+            border-radius: 16px;
+            box-shadow: 8px 8px 0px 0px #000000;
+            transition: all 0.2s ease;
+        }
+        
+        .neo-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 12px 12px 0px 0px #000000;
+        }
+
+        .neo-btn {
+            border: 4px solid #000000;
+            box-shadow: 6px 6px 0px 0px #000000;
+            transition: all 0.1s ease;
+        }
+
+        .neo-btn:active {
+            transform: translate(6px, 6px);
+            box-shadow: 0px 0px 0px 0px #000000;
+        }
+
+        /* Text Sticker Effects */
+        .sticker-text {
+            color: #e53e30; /* Red */
+            -webkit-text-stroke: 8px white;
+            paint-order: stroke fill;
+            text-shadow: 0px 6px 0px rgba(0,0,0,0.15); /* Soft drop shadow outside the white */
+        }
+        .sticker-text-blue {
+            color: #234794;
+            -webkit-text-stroke: 8px white;
+            paint-order: stroke fill;
+        }
+        .sticker-text-yellow {
+            color: #fed201;
+            -webkit-text-stroke: 6px white;
+            paint-order: stroke fill;
+        }
+
+        /* Ensure actual fill color stays on top in browsers that don't support paint-order well */
+        @supports not (paint-order: stroke fill) {
+            .text-outline-fallback {
+                text-shadow: 
+                    -4px -4px 0 #fff, 0 -4px 0 #fff, 4px -4px 0 #fff,
+                    4px 0 0 #fff, 4px 4px 0 #fff, 0 4px 0 #fff,
+                    -4px 4px 0 #fff, -4px 0 0 #fff;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #325ab3; border-left: 3px solid #000; }
+        ::-webkit-scrollbar-thumb { background: #fed201; border: 3px solid #000; border-radius: 8px; }
+        
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="antialiased font-sans selection:bg-pop-pink selection:text-white">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-24 right-4 z-50 flex flex-col gap-4 pointer-events-none"></div>
+
+    <!-- Top Navigation -->
+    <nav class="fixed w-full z-40 bg-pop-yellow border-b-4 border-black py-2 transition-all shadow-[0_8px_0_0_rgba(0,0,0,1)]" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-14">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer group" onclick="scrollToTop()">
+                    <div class="w-10 h-10 bg-pop-red border-2 border-black rounded-full flex items-center justify-center transform group-hover:rotate-12 transition-transform shadow-[2px_2px_0_0_#000]">
+                        <span class="text-white font-display text-xl leading-none pt-1">A</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-display text-2xl leading-none text-black tracking-wide">ATHARVA</span>
+                        <span class="text-[10px] font-bold tracking-widest text-black uppercase bg-white border border-black px-1 mt-0.5 rounded-sm w-max">MAN 6 JKT</span>
+                    </div>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="flex items-center space-x-6 font-bold text-base text-black">
+                        <a href="#roster" class="hover:text-pop-red hover:-translate-y-1 transition-transform">Guild Roster</a>
+                        <a href="#quests" class="hover:text-pop-blue hover:-translate-y-1 transition-transform">Mission Log</a>
+                        <a href="#leaderboard" class="hover:text-pop-green hover:-translate-y-1 transition-transform">Rankings</a>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div>
+                    <button onclick="toggleAspirasiSheet()" class="hidden md:flex items-center gap-2 bg-pop-pink text-white px-5 py-2 rounded-xl text-lg font-display neo-btn">
+                        <i class="ph-bold ph-paper-plane-tilt"></i> Feedback
+                    </button>
+                    
+                    <!-- Mobile menu button -->
+                    <button class="md:hidden w-12 h-12 flex items-center justify-center bg-white border-4 border-black rounded-xl text-black shadow-[4px_4px_0_0_#000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all" id="mobile-menu-btn">
+                        <i class="ph-bold ph-list text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu Panel -->
+        <div class="md:hidden hidden absolute w-full px-4 mt-4" id="mobile-menu">
+            <div class="bg-white border-4 border-black rounded-2xl p-4 space-y-3 font-bold text-black text-lg shadow-[8px_8px_0_0_#000]">
+                <a href="#roster" class="block bg-pop-yellow border-2 border-black px-4 py-3 rounded-xl"><i class="ph-bold ph-users mr-2"></i> Guild Roster</a>
+                <a href="#quests" class="block bg-pop-green text-white border-2 border-black px-4 py-3 rounded-xl"><i class="ph-bold ph-map-trifold mr-2"></i> Mission Log</a>
+                <a href="#leaderboard" class="block bg-pop-blue text-white border-2 border-black px-4 py-3 rounded-xl"><i class="ph-bold ph-trophy mr-2"></i> Rankings</a>
+                <button onclick="toggleAspirasiSheet(); document.getElementById('mobile-menu').classList.add('hidden');" class="w-full text-left bg-pop-pink text-white block px-4 py-3 rounded-xl border-2 border-black"><i class="ph-bold ph-paper-plane-tilt mr-2"></i> Drop Feedback!</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main>
+        
+        <!-- ================= HERO SECTION (Sticker Aesthetic) ================= -->
+        <section id="start" class="relative pt-40 pb-32 min-h-screen flex items-center justify-center overflow-hidden">
+            
+            <!-- FLOATING STICKERS (Emojis & Shapes) -->
+            <!-- Ticket -->
+            <div class="absolute top-32 left-10 md:left-20 animate-wiggle transform -rotate-12 z-10 w-32 md:w-48 hidden sm:block">
+                <div class="bg-pop-red border-4 border-black p-2 text-center text-white font-display text-xl tracking-widest shadow-[6px_6px_0_0_#000]">FOOD SPOTS</div>
+                <div class="bg-[#f4ebd0] border-x-4 border-b-4 border-black h-20 md:h-24 shadow-[6px_6px_0_0_#000] flex justify-center py-2">
+                    <div class="w-4/5 border-dashed border-l-4 border-black opacity-30"></div>
+                </div>
+            </div>
+
+            <!-- Round Badge -->
+            <div class="absolute top-24 right-5 md:right-32 animate-spin-slow z-10 hidden sm:flex w-32 h-32 md:w-40 md:h-40 bg-white border-4 border-black rounded-full items-center justify-center shadow-[6px_6px_0_0_#000] p-2">
+                <div class="w-full h-full border-2 border-pop-blue rounded-full relative flex items-center justify-center">
+                    <span class="text-6xl pt-2">🙂</span>
+                    <!-- Text curved around would go here, simulating with absolute text -->
+                    <svg viewBox="0 0 100 100" class="absolute w-full h-full animate-spin-slow" style="animation-duration: 20s;">
+                      <path id="curve" d="M 50,50 m -35,0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0" fill="transparent" />
+                      <text class="font-display text-[11px] fill-pop-blue tracking-widest">
+                        <textPath href="#curve">GOOD TIMES GOOD VIBES •</textPath>
+                      </text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Star Tape -->
+            <div class="absolute bottom-20 left-5 md:left-20 animate-float-slow z-10 w-48 md:w-64 bg-pop-green border-4 border-black p-3 shadow-[8px_8px_0_0_#000] transform rotate-3 flex justify-around">
+                <span class="text-4xl text-pop-yellow filter drop-shadow-[2px_2px_0_#000]">⭐</span>
+                <span class="text-4xl text-pop-yellow filter drop-shadow-[2px_2px_0_#000] transform -translate-y-2">⭐</span>
+                <span class="text-4xl text-pop-yellow filter drop-shadow-[2px_2px_0_#000]">⭐</span>
+            </div>
+
+            <!-- Eyes -->
+            <div class="absolute bottom-10 left-1/4 animate-wiggle z-20 text-7xl md:text-8xl filter drop-shadow-[4px_4px_0_#000]">
+                👀
+            </div>
+
+            <!-- Camera -->
+            <div class="absolute bottom-16 right-10 md:right-32 animate-float-fast z-20 text-7xl md:text-8xl filter drop-shadow-[4px_4px_0_#000]">
+                📸
+            </div>
+
+            <!-- Dice -->
+            <div class="absolute top-1/2 right-10 md:right-24 animate-float-slow z-20 text-6xl md:text-7xl filter drop-shadow-[4px_4px_0_#000] transform rotate-12">
+                🎲
+            </div>
+
+            <!-- Hello Sticker -->
+            <div class="absolute top-1/4 left-1/3 animate-float-fast z-10 bg-white border-4 border-pop-pink rounded-xl px-4 py-1 transform -rotate-6 shadow-[4px_4px_0_0_rgba(0,0,0,0.2)]">
+                <span class="font-script text-3xl text-pop-blue">Hello!</span>
+            </div>
+
+
+            <!-- MAIN HERO TEXT -->
+            <div class="max-w-4xl mx-auto px-4 text-center relative z-30 flex flex-col items-center justify-center">
+                
+                <h1 class="flex flex-col items-center">
+                    <!-- ATHARVA -->
+                    <span class="font-display text-7xl sm:text-8xl md:text-[9rem] leading-none sticker-text text-outline-fallback mb-2 uppercase transform -rotate-2">
+                        ATHARVA
+                    </span>
+                    <!-- OSIS MAN 6 JAKARTA -->
+                    <span class="font-script text-4xl sm:text-5xl md:text-6xl sticker-text text-outline-fallback tracking-wide transform rotate-2">
+                        OSIS MAN 6 JAKARTA
+                    </span>
+                    <!-- 2026-2027 -->
+                    <span class="font-display text-4xl sm:text-5xl md:text-6xl sticker-text-blue text-outline-fallback mt-4 bg-white px-6 border-4 border-black shadow-[6px_6px_0_0_#000] transform -rotate-1">
+                        2026-2027
+                    </span>
+                </h1>
+                
+                <div class="mt-16 flex flex-col sm:flex-row gap-6 justify-center items-center w-full max-w-md">
+                    <a href="#quests" class="w-full neo-btn inline-flex items-center justify-center gap-3 px-8 py-4 text-xl font-display text-black bg-pop-yellow rounded-xl">
+                        <i class="ph-bold ph-play-circle text-2xl"></i> EXPLORE
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Mouse Cursor SVG custom -->
+            <svg class="absolute bottom-1/3 right-1/4 animate-wiggle z-30 w-16 h-16 hidden lg:block" viewBox="0 0 24 24" fill="white" stroke="black" stroke-width="2">
+                <path d="M4 2v20l6-6h9l-15-14z"/>
+            </svg>
+        </section>
+
+
+        <!-- ================= CHARACTER ROSTER (BPH) ================= -->
+        <section id="roster" class="py-24 relative bg-pop-pink border-y-4 border-black">
+            <!-- Background pattern for this section -->
+            <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#000 2px, transparent 2px); background-size: 20px 20px;"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                
+                <div class="text-center mb-16">
+                    <h2 class="font-display text-5xl md:text-6xl text-white mb-4 sticker-text-blue text-outline-fallback" style="color: #ffffff; -webkit-text-stroke: 6px black;">GUILD ROSTER</h2>
+                    <p class="text-black bg-white inline-block px-4 py-2 border-2 border-black font-bold shadow-[4px_4px_0_0_#000] transform rotate-1">Player utama yang memandu organisasi.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+                    
+                    <!-- Roster Generation Script to keep it clean -->
+                    <script>
+                        const roster = [
+                            { name: 'Rey', role: 'Guild Master (Ketua)', icon: 'ph-crown', color: 'bg-pop-blue', delay: '0' },
+                            { name: 'Raisya', role: 'Vice Master (Wakil)', icon: 'ph-star', color: 'bg-pop-yellow', delay: '100' },
+                            { name: 'Bintang', role: 'Scribe I (Sekretaris)', icon: 'ph-scroll', color: 'bg-pop-green', delay: '200' },
+                            { name: 'Shafa', role: 'Scribe II (Sekretaris)', icon: 'ph-feather', color: 'bg-[#a855f7]', delay: '300' },
+                            { name: 'Aisyah', role: 'Vault Keeper (Bendahara)', icon: 'ph-coins', color: 'bg-pop-red', delay: '400' },
+                            { name: 'Nibroos', role: 'Vault Keeper (Bendahara)', icon: 'ph-treasure-chest', color: 'bg-[#fb923c]', delay: '500' }
+                        ];
+
+                        roster.forEach(player => {
+                            document.write(`
+                                <div class="neo-card p-4 cursor-pointer bg-white group flex flex-col items-center" onclick="showToast('${player.name} selected!', 'success')">
+                                    <div class="w-full h-56 rounded-xl border-4 border-black mb-4 relative overflow-hidden ${player.color}">
+                                        <!-- Fake Image Placeholder -->
+                                        <div class="absolute inset-0 flex items-center justify-center opacity-50">
+                                            <i class="ph-bold ${player.icon} text-7xl text-black"></i>
+                                        </div>
+                                        <div class="absolute top-2 right-2 bg-white border-2 border-black rounded-full p-2 shadow-[2px_2px_0_0_#000]">
+                                            <i class="ph-bold ${player.icon} text-xl text-black"></i>
+                                        </div>
+                                    </div>
+                                    <h3 class="font-display text-3xl text-black uppercase">${player.name}</h3>
+                                    <p class="font-bold text-gray-600 bg-gray-100 border-2 border-black px-3 py-1 rounded-full text-xs mt-2 uppercase shadow-[2px_2px_0_0_#000]">${player.role}</p>
+                                </div>
+                            `);
+                        });
+                    </script>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= MISSION LOG & TAB ================= -->
+        <section id="quests" class="py-24 relative bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+                    <div class="text-center md:text-left">
+                        <h2 class="font-display text-5xl md:text-6xl sticker-text-blue text-outline-fallback mb-2 uppercase">MISSION LOG</h2>
+                    </div>
+                    
+                    <!-- Brutalist Tabs -->
+                    <div class="flex flex-wrap gap-4 w-full md:w-auto justify-center">
+                        <button id="btn-tab-events" onclick="switchTab('events')" class="neo-btn flex-1 md:flex-none px-6 py-3 font-display text-xl text-black bg-pop-yellow flex items-center justify-center gap-2 uppercase tracking-wide">
+                            <i class="ph-bold ph-sword"></i> Quests
+                        </button>
+                        <button id="btn-tab-divisions" onclick="switchTab('divisions')" class="neo-btn flex-1 md:flex-none px-6 py-3 font-display text-xl text-black bg-white flex items-center justify-center gap-2 uppercase tracking-wide opacity-70 hover:opacity-100 shadow-[4px_4px_0_0_#000]">
+                            <i class="ph-bold ph-users-three"></i> Factions
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TAB VIEW: Events -->
+                <div id="view-events" class="block">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        
+                        <!-- Event 1 -->
+                        <div class="neo-card bg-[#f4ebd0] p-6 relative group overflow-hidden cursor-pointer" onclick="showToast('Quest ARCANA VOL.2!', 'info')">
+                            <!-- Progress Bar -->
+                            <div class="w-full bg-white border-2 border-black h-6 rounded-full mb-6 relative overflow-hidden shadow-[inset_2px_2px_0_0_rgba(0,0,0,0.1)]">
+                                <div class="bg-pop-blue h-full border-r-2 border-black w-[65%] flex items-center justify-end px-2">
+                                    <span class="text-[10px] font-bold text-white">65%</span>
+                                </div>
+                            </div>
+                            
+                            <h3 class="font-display text-4xl text-black mb-2 uppercase">ARCANA VOL.2</h3>
+                            <p class="font-semibold text-black text-lg mb-6">Ajang kompetisi seni & olahraga! Buktikan skill guild-mu di arena ini!</p>
+                            
+                            <div class="flex gap-3">
+                                <span class="bg-white border-2 border-black px-3 py-1 font-bold shadow-[2px_2px_0_0_#000] text-sm">#SPORTS</span>
+                                <span class="bg-pop-red text-white border-2 border-black px-3 py-1 font-bold shadow-[2px_2px_0_0_#000] text-sm">ACTIVE</span>
+                            </div>
+                            
+                            <!-- Deco -->
+                            <i class="ph-fill ph-trophy absolute -bottom-4 -right-4 text-8xl text-pop-blue opacity-20 transform -rotate-12 group-hover:scale-110 transition-transform"></i>
+                        </div>
+
+                        <!-- Event 2 -->
+                        <div class="neo-card bg-[#e6f4ea] p-6 relative group overflow-hidden cursor-pointer" onclick="showToast('Quest EL ACTION locked!', 'info')">
+                            <div class="w-full bg-white border-2 border-black h-6 rounded-full mb-6 relative overflow-hidden">
+                                <div class="bg-gray-400 h-full border-r-2 border-black w-[15%]"></div>
+                            </div>
+                            
+                            <h3 class="font-display text-4xl text-black mb-2 uppercase">EL ACTION</h3>
+                            <p class="font-semibold text-black text-lg mb-6">Edukasi Literasi & Aksi Lingkungan. Kumpulkan item daur ulang!</p>
+                            
+                            <div class="flex gap-3">
+                                <span class="bg-white border-2 border-black px-3 py-1 font-bold shadow-[2px_2px_0_0_#000] text-sm">#GREEN</span>
+                                <span class="bg-gray-200 border-2 border-black px-3 py-1 font-bold shadow-[2px_2px_0_0_#000] text-sm flex items-center gap-1"><i class="ph-bold ph-lock"></i> LOCKED</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- TAB VIEW: Divisions -->
+                <div id="view-divisions" class="hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <script>
+                            const factionsData = [
+                                { id: 'f1', icon: 'ph-hands-praying', color: 'bg-pop-blue', title: 'Keagamaan', desc: 'Buff moral & spiritual.' },
+                                { id: 'f2', icon: 'ph-folders', color: 'bg-pop-yellow', title: 'Administrasi', desc: 'Manajemen arsip (Sekretaris).' },
+                                { id: 'f3', icon: 'ph-shield-check', color: 'bg-pop-red', title: 'Bela Negara', desc: 'Defense & Discipline check.' },
+                                { id: 'f4', icon: 'ph-broadcast', color: 'bg-pop-green', title: 'Humas', desc: 'Komunikasi eksternal.' },
+                                { id: 'f5', icon: 'ph-palette', color: 'bg-pop-pink', title: 'Kreatif', desc: 'Arts & Event generation.' },
+                                { id: 'f6', icon: 'ph-book-open', color: 'bg-[#a855f7]', title: 'Literasi Adiwiyata', desc: 'Intelligence & Environment.' },
+                                { id: 'f7', icon: 'ph-coin', color: 'bg-[#fb923c]', title: 'Pendanaan', desc: 'Gold farming & resources.' }
+                            ];
+
+                            factionsData.forEach(fac => {
+                                document.write(`
+                                    <div class="neo-card overflow-hidden">
+                                        <button onclick="toggleAccordion('${fac.id}')" class="w-full flex items-center justify-between p-4 bg-white hover:bg-gray-50 text-left border-b-4 border-black">
+                                            <div class="flex items-center gap-4">
+                                                <div class="w-12 h-12 rounded-full ${fac.color} border-2 border-black flex items-center justify-center text-white shadow-[2px_2px_0_0_#000] shrink-0">
+                                                    <i class="ph-bold ${fac.icon} text-2xl"></i>
+                                                </div>
+                                                <h4 class="font-display text-xl text-black uppercase tracking-wide">${fac.title}</h4>
+                                            </div>
+                                            <i id="icon-${fac.id}" class="ph-bold ph-caret-down text-xl text-black transition-transform"></i>
+                                        </button>
+                                        <div id="content-${fac.id}" class="hidden p-4 bg-gray-100">
+                                            <p class="font-bold text-sm text-gray-600 mb-3 uppercase">${fac.desc}</p>
+                                            <ul class="space-y-2 font-bold text-black border-l-4 border-black pl-3">
+                                                <li class="flex items-center gap-2"><i class="ph-bold ph-check text-pop-green"></i> Proker Utama Aktif</li>
+                                                <li class="flex items-center gap-2"><i class="ph-bold ph-clock text-pop-blue"></i> Event Pending</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                `);
+                            });
+                        </script>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ================= LEADERBOARD ================= -->
+        <section id="leaderboard" class="py-24 relative bg-pop-green border-t-4 border-black overflow-hidden">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
+                
+                <div class="text-center mb-12">
+                    <h2 class="font-display text-5xl md:text-6xl text-white mb-2 uppercase sticker-text-yellow text-outline-fallback" style="color: #fed201; -webkit-text-stroke: 6px black;">RANKINGS</h2>
+                    <p class="font-bold bg-white border-2 border-black px-4 py-1 inline-block shadow-[4px_4px_0_0_#000] transform -rotate-2">XP Guild Kelas Bulan Ini!</p>
+                </div>
+
+                <div class="neo-card bg-white p-4 overflow-x-auto hide-scrollbar">
+                    <table class="w-full text-left min-w-[500px]">
+                        <thead>
+                            <tr class="border-b-4 border-black bg-gray-100">
+                                <th class="p-4 font-display text-xl uppercase w-20 text-center">Rank</th>
+                                <th class="p-4 font-display text-xl uppercase">Guild</th>
+                                <th class="p-4 font-display text-xl uppercase text-center">Badges</th>
+                                <th class="p-4 font-display text-xl uppercase text-right">Total XP</th>
+                            </tr>
+                        </thead>
+                        <tbody class="font-bold text-lg">
+                            <tr class="border-b-2 border-gray-200 hover:bg-pop-yellow transition-colors cursor-pointer" onclick="showToast('XI IPA 1 - Champion!', 'success')">
+                                <td class="p-4 text-center"><div class="w-10 h-10 mx-auto bg-pop-red text-white border-2 border-black rounded-full flex items-center justify-center font-display text-xl shadow-[2px_2px_0_0_#000]">1</div></td>
+                                <td class="p-4 text-2xl">XI IPA 1</td>
+                                <td class="p-4 text-center text-2xl">⭐ 🔥</td>
+                                <td class="p-4 text-right text-pop-blue">12,450</td>
+                            </tr>
+                            <tr class="border-b-2 border-gray-200 hover:bg-pop-yellow transition-colors">
+                                <td class="p-4 text-center"><div class="w-10 h-10 mx-auto bg-gray-300 border-2 border-black rounded-full flex items-center justify-center font-display text-xl shadow-[2px_2px_0_0_#000]">2</div></td>
+                                <td class="p-4 text-xl">X IPS 2</td>
+                                <td class="p-4 text-center text-2xl">🛡️</td>
+                                <td class="p-4 text-right">11,200</td>
+                            </tr>
+                            <tr class="border-b-2 border-gray-200 hover:bg-pop-yellow transition-colors">
+                                <td class="p-4 text-center"><div class="w-10 h-10 mx-auto bg-[#fb923c] text-white border-2 border-black rounded-full flex items-center justify-center font-display text-xl shadow-[2px_2px_0_0_#000]">3</div></td>
+                                <td class="p-4 text-xl">XII IPA 3</td>
+                                <td class="p-4 text-center text-2xl">⚡</td>
+                                <td class="p-4 text-right">10,850</td>
+                            </tr>
+                            <tr class="text-gray-500">
+                                <td class="p-4 text-center">4</td>
+                                <td class="p-4">XI IPS 1</td>
+                                <td class="p-4 text-center">-</td>
+                                <td class="p-4 text-right">8,400</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Deco Elements -->
+            <div class="absolute bottom-10 left-10 text-8xl animate-wiggle opacity-50 z-0">🏆</div>
+        </section>
+
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-black py-12 relative z-10 text-white">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+            
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-pop-yellow border-2 border-white flex items-center justify-center text-black">
+                    <span class="font-display text-2xl pt-1">A</span>
+                </div>
+                <div>
+                    <h4 class="font-display text-2xl uppercase">ATHARVA</h4>
+                    <span class="text-xs font-bold font-sans tracking-widest text-gray-400 uppercase">OSIS MAN 6 JKT - 2026/2027</span>
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <a href="#" class="w-12 h-12 bg-white text-black border-2 border-black rounded-full flex items-center justify-center hover:bg-pop-pink hover:text-white transition-colors transform hover:rotate-12"><i class="ph-bold ph-instagram-logo text-2xl"></i></a>
+                <a href="#" class="w-12 h-12 bg-white text-black border-2 border-black rounded-full flex items-center justify-center hover:bg-pop-blue hover:text-white transition-colors transform hover:-rotate-12"><i class="ph-bold ph-discord-logo text-2xl"></i></a>
+            </div>
+            
+        </div>
+    </footer>
+
+
+    <!-- ================= BOTTOM SHEET: FEEDBACK ================= -->
+    
+    <div id="aspirasi-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity" onclick="toggleAspirasiSheet()"></div>
+    
+    <div id="aspirasi-sheet" class="fixed bottom-0 left-0 w-full z-50 transform translate-y-full transition-transform duration-300 flex justify-center">
+        
+        <div class="w-full max-w-lg bg-pop-yellow border-x-4 border-t-4 border-black rounded-t-[2rem] p-6 md:p-8 shadow-[0_-10px_0_0_rgba(0,0,0,1)] relative">
+            
+            <div class="w-16 h-2 bg-black rounded-full mx-auto mb-6"></div>
+
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="font-display text-3xl text-black uppercase">DROP FEEDBACK!</h2>
+                    <p class="font-bold text-black border-b-2 border-black inline-block">Saran atau aduan quest.</p>
+                </div>
+                <button onclick="toggleAspirasiSheet()" class="w-10 h-10 bg-white border-2 border-black rounded-xl flex items-center justify-center text-black hover:bg-pop-red hover:text-white transition-colors shadow-[2px_2px_0_0_#000]">
+                    <i class="ph-bold ph-x text-xl"></i>
+                </button>
+            </div>
+
+            <form id="feedback-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                
+                <div id="form-success" class="absolute inset-0 bg-white z-10 hidden flex-col items-center justify-center text-center rounded-t-[2rem] border-x-4 border-t-4 border-black">
+                    <div class="text-7xl mb-4 animate-bounce">🎯</div>
+                    <h3 class="font-display text-4xl text-black uppercase mb-2">QUEST DONE!</h3>
+                    <p class="font-bold text-gray-700 mb-6 px-4 text-lg">Pesan masuk. +50 XP!</p>
+                    <button type="button" onclick="closeFormSuccess()" class="neo-btn bg-pop-blue text-white px-8 py-3 font-display text-xl uppercase rounded-xl">Close Menu</button>
+                </div>
+
+                <div>
+                    <input type="text" placeholder="Player Name (Opsional)" class="w-full bg-white border-4 border-black text-black font-bold rounded-xl px-4 py-4 focus:outline-none shadow-[4px_4px_0_0_#000] focus:translate-x-1 focus:translate-y-1 focus:shadow-none transition-all placeholder-gray-400">
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <select required class="w-full bg-white border-4 border-black text-black font-bold rounded-xl px-4 py-4 focus:outline-none shadow-[4px_4px_0_0_#000] appearance-none cursor-pointer">
+                        <option value="">Pilih Guild (Kelas)</option>
+                        <option value="10">X (Level 10)</option>
+                        <option value="11">XI (Level 11)</option>
+                        <option value="12">XII (Level 12)</option>
+                    </select>
+                    <select required class="w-full bg-white border-4 border-black text-black font-bold rounded-xl px-4 py-4 focus:outline-none shadow-[4px_4px_0_0_#000] appearance-none cursor-pointer">
+                        <option value="">Tipe Pesan</option>
+                        <option value="saran">Ide / Saran</option>
+                        <option value="aduan">Report Bug</option>
+                    </select>
+                </div>
+
+                <div>
+                    <textarea required rows="4" placeholder="Tulis pesanmu di sini..." class="w-full bg-white border-4 border-black text-black font-bold rounded-xl px-4 py-4 focus:outline-none shadow-[4px_4px_0_0_#000] resize-none focus:translate-x-1 focus:translate-y-1 focus:shadow-none transition-all placeholder-gray-400"></textarea>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" class="w-full neo-btn py-4 bg-pop-pink text-white font-display text-2xl uppercase rounded-xl tracking-wider">
+                        KIRIM PESAN!
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        // 1. MOBILE MENU
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 2. TOAST NOTIFICATION (Brutalist)
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bg = 'bg-pop-blue text-white';
+            let icon = 'ph-info';
+            
+            if(type === 'success') {
+                bg = 'bg-pop-green text-white';
+                icon = 'ph-check-circle';
+            }
+
+            toast.className = `flex items-center gap-3 p-4 border-4 border-black rounded-xl shadow-[6px_6px_0_0_#000] ${bg} transform transition-all duration-300 translate-x-[120%]`;
+            toast.innerHTML = `
+                <i class="ph-bold ${icon} text-2xl"></i>
+                <p class="font-bold text-lg">${message}</p>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => toast.classList.remove('translate-x-[120%]'), 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-x-[120%]');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // 3. TABS LOGIC
+        function switchTab(tabName) {
+            const btnEvents = document.getElementById('btn-tab-events');
+            const btnDivs = document.getElementById('btn-tab-divisions');
+            const viewEvents = document.getElementById('view-events');
+            const viewDivs = document.getElementById('view-divisions');
+
+            // Reset classes
+            const baseClass = "neo-btn flex-1 md:flex-none px-6 py-3 font-display text-xl text-black flex items-center justify-center gap-2 uppercase tracking-wide ";
+            
+            btnEvents.className = baseClass + "bg-white opacity-70 hover:opacity-100 shadow-[4px_4px_0_0_#000]";
+            btnDivs.className = baseClass + "bg-white opacity-70 hover:opacity-100 shadow-[4px_4px_0_0_#000]";
+            
+            viewEvents.classList.add('hidden');
+            viewDivs.classList.add('hidden');
+
+            // Active Class
+            const activeClass = baseClass + "bg-pop-yellow shadow-[6px_6px_0_0_#000] scale-105";
+
+            if (tabName === 'events') {
+                btnEvents.className = activeClass;
+                viewEvents.classList.remove('hidden');
+            } else {
+                btnDivs.className = activeClass;
+                viewDivs.classList.remove('hidden');
+            }
+        }
+
+        // 4. ACCORDION LOGIC
+        function toggleAccordion(id) {
+            const content = document.getElementById('content-' + id);
+            const icon = document.getElementById('icon-' + id);
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        }
+
+        // 5. BOTTOM SHEET LOGIC
+        const aspirasiSheet = document.getElementById('aspirasi-sheet');
+        const aspirasiOverlay = document.getElementById('aspirasi-overlay');
+        const formSuccess = document.getElementById('form-success');
+        const feedbackForm = document.getElementById('feedback-form');
+        let isSheetOpen = false;
+
+        function toggleAspirasiSheet() {
+            isSheetOpen = !isSheetOpen;
+            if (isSheetOpen) {
+                aspirasiSheet.classList.remove('translate-y-full');
+                aspirasiOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                aspirasiOverlay.classList.add('opacity-100', 'pointer-events-auto');
+                document.body.style.overflow = 'hidden'; 
+            } else {
+                aspirasiSheet.classList.add('translate-y-full');
+                aspirasiOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+                aspirasiOverlay.classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = 'auto'; 
+                
+                setTimeout(() => {
+                    formSuccess.classList.add('hidden');
+                    formSuccess.classList.remove('flex');
+                    feedbackForm.reset();
+                }, 300);
+            }
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = 'SENDING...';
+            submitBtn.classList.add('opacity-70', 'translate-x-1', 'translate-y-1', 'shadow-none');
+
+            setTimeout(() => {
+                formSuccess.classList.remove('hidden');
+                formSuccess.classList.add('flex');
+                
+                submitBtn.innerHTML = originalText;
+                submitBtn.classList.remove('opacity-70', 'translate-x-1', 'translate-y-1', 'shadow-none');
+            }, 1000);
+        }
+
+        function closeFormSuccess() {
+            toggleAspirasiSheet();
+        }
+
+    </script>
+</body>
+</html>
