@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARCANA VOL.2 - Quest Details</title>
+    
+    <!-- Fonts for the Sticker Pop-Art Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Fredoka:wght@400;500;600;700&family=Titan+One&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons (Phosphor) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Tailwind Config (Matching the original theme) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Fredoka', 'sans-serif'],
+                        display: ['Titan One', 'cursive'],
+                        script: ['Chewy', 'cursive'],
+                    },
+                    colors: {
+                        pop: {
+                            blue: '#325ab3',
+                            darkblue: '#234794',
+                            red: '#e53e30',
+                            yellow: '#fed201',
+                            green: '#02a368',
+                            pink: '#e84c8a',
+                        }
+                    },
+                    animation: {
+                        'float-slow': 'float 6s ease-in-out infinite',
+                        'float-fast': 'float 4s ease-in-out infinite reverse',
+                        'wiggle': 'wiggle 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-15px) rotate(4deg)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-5deg)' },
+                            '50%': { transform: 'rotate(5deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base styles & Checkerboard Background */
+        body {
+            background-color: #325ab3;
+            background-image: conic-gradient(from 0deg, #234794 90deg, transparent 90deg 180deg, #234794 180deg 270deg, transparent 270deg 360deg);
+            background-size: 120px 120px;
+            background-position: 0 0;
+            color: #000;
+            overflow-x: hidden;
+        }
+
+        /* Neo-Brutalism Utilities */
+        .neo-card {
+            background-color: #ffffff;
+            border: 4px solid #000000;
+            border-radius: 16px;
+            box-shadow: 8px 8px 0px 0px #000000;
+            transition: all 0.2s ease;
+        }
+        
+        .neo-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 12px 12px 0px 0px #000000;
+        }
+
+        .neo-btn {
+            border: 4px solid #000000;
+            box-shadow: 6px 6px 0px 0px #000000;
+            transition: all 0.1s ease;
+        }
+
+        .neo-btn:active {
+            transform: translate(6px, 6px);
+            box-shadow: 0px 0px 0px 0px #000000;
+        }
+
+        /* Text Sticker Effects */
+        .sticker-text-blue {
+            color: #234794;
+            -webkit-text-stroke: 8px white;
+            paint-order: stroke fill;
+            text-shadow: 0px 6px 0px rgba(0,0,0,0.15);
+        }
+        .sticker-text-yellow {
+            color: #fed201;
+            -webkit-text-stroke: 6px white;
+            paint-order: stroke fill;
+        }
+
+        @supports not (paint-order: stroke fill) {
+            .text-outline-fallback {
+                text-shadow: 
+                    -4px -4px 0 #fff, 0 -4px 0 #fff, 4px -4px 0 #fff,
+                    4px 0 0 #fff, 4px 4px 0 #fff, 0 4px 0 #fff,
+                    -4px 4px 0 #fff, -4px 0 0 #fff;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #325ab3; border-left: 3px solid #000; }
+        ::-webkit-scrollbar-thumb { background: #fed201; border: 3px solid #000; border-radius: 8px; }
+    </style>
+</head>
+<body class="antialiased font-sans selection:bg-pop-pink selection:text-white pb-10">
+
+    <!-- Top Navigation -->
+    <nav class="fixed w-full z-40 bg-pop-yellow border-b-4 border-black py-2 transition-all shadow-[0_8px_0_0_rgba(0,0,0,1)]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-14">
+                <!-- Back Button -->
+                <a href="/index.html" class="flex items-center gap-2 bg-white border-4 border-black rounded-xl px-4 py-2 font-bold text-black hover:bg-pop-red hover:text-white transition-colors neo-btn">
+                    <i class="ph-bold ph-arrow-left text-xl"></i>
+                    <span class="hidden sm:inline">Back to Quests</span>
+                </a>
+                
+                <!-- Logo Mini -->
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <div class="w-8 h-8 bg-pop-blue border-2 border-black rounded-full flex items-center justify-center transform rotate-12 shadow-[2px_2px_0_0_#000]">
+                        <span class="text-white font-display text-sm leading-none pt-1">A</span>
+                    </div>
+                    <span class="font-display text-xl leading-none text-black tracking-wide pt-1">ATHARVA</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="pt-28 max-w-5xl mx-auto px-4 sm:px-6">
+        
+        <!-- Header / Title Section -->
+        <header class="text-center relative mb-16 mt-8">
+            <!-- Floating Elements -->
+            <div class="absolute top-0 left-0 md:left-10 text-5xl animate-float-slow transform -rotate-12 z-0">🎨</div>
+            <div class="absolute bottom-0 right-0 md:right-10 text-6xl animate-wiggle transform rotate-12 z-0">🏀</div>
+            
+            <div class="relative z-10">
+                <span class="font-script text-3xl md:text-4xl text-pop-yellow drop-shadow-[2px_2px_0_#000] tracking-wider block mb-2 transform -rotate-2">Special Event Quest</span>
+                <h1 class="font-display text-5xl sm:text-6xl md:text-8xl sticker-text-blue text-outline-fallback uppercase transform rotate-1 leading-tight">
+                    ARCANA VOL.2
+                </h1>
+                
+                <div class="flex justify-center gap-3 mt-6">
+                    <span class="bg-pop-green text-white border-2 border-black px-4 py-1 font-bold shadow-[4px_4px_0_0_#000] text-sm md:text-base uppercase rounded-lg transform -rotate-2">
+                        <i class="ph-bold ph-check-circle inline-block mr-1"></i> Active
+                    </span>
+                    <span class="bg-white border-2 border-black px-4 py-1 font-bold shadow-[4px_4px_0_0_#000] text-sm md:text-base uppercase rounded-lg transform rotate-2">
+                        #Sports & Art
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Detail Cards Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            
+            <!-- Date & Time -->
+            <div class="neo-card bg-[#e6f4ea] p-6 flex flex-col md:col-span-1">
+                <div class="w-12 h-12 bg-pop-green text-white border-2 border-black rounded-full flex items-center justify-center mb-4 shadow-[2px_2px_0_0_#000]">
+                    <i class="ph-bold ph-calendar-blank text-2xl"></i>
+                </div>
+                <h3 class="font-display text-2xl text-black mb-1 uppercase">Waktu</h3>
+                <p class="font-bold text-gray-800 text-lg border-b-2 border-black pb-2 mb-2">15 - 20 Agustus 2026</p>
+                <div class="flex items-center gap-2 font-bold text-gray-800 mt-auto">
+                    <i class="ph-bold ph-clock text-pop-red text-xl"></i>
+                    <span>07:00 WIB - Selesai</span>
+                </div>
+            </div>
+
+            <!-- Location -->
+            <div class="neo-card bg-[#f4ebd0] p-6 flex flex-col md:col-span-1">
+                <div class="w-12 h-12 bg-pop-yellow text-black border-2 border-black rounded-full flex items-center justify-center mb-4 shadow-[2px_2px_0_0_#000]">
+                    <i class="ph-bold ph-map-pin text-2xl"></i>
+                </div>
+                <h3 class="font-display text-2xl text-black mb-1 uppercase">Lokasi</h3>
+                <p class="font-bold text-gray-800 text-lg mb-2">Lapangan Utama & Aula</p>
+                <p class="font-semibold text-gray-600 text-sm mt-auto border-t-2 border-black pt-2">
+                    MAN 6 Jakarta<br>Jl. Pendidikan No. 1, Jakarta Timur
+                </p>
+            </div>
+
+            <!-- Quest Reward / Goal -->
+            <div class="neo-card bg-pop-pink p-6 flex flex-col md:col-span-1 border-4 border-black text-white relative overflow-hidden group">
+                <div class="w-12 h-12 bg-white text-pop-pink border-2 border-black rounded-full flex items-center justify-center mb-4 shadow-[2px_2px_0_0_#000] relative z-10">
+                    <i class="ph-bold ph-star text-2xl"></i>
+                </div>
+                <h3 class="font-display text-2xl mb-1 uppercase relative z-10">Quest Reward</h3>
+                <p class="font-bold text-lg mb-2 relative z-10">+500 Guild XP</p>
+                <p class="font-semibold text-sm mt-auto relative z-10 bg-black/20 p-2 rounded-lg border border-black">
+                    Piala Bergilir & Sertifikat Partisipasi untuk seluruh player.
+                </p>
+                <i class="ph-fill ph-trophy absolute -bottom-6 -right-6 text-9xl text-black opacity-20 transform -rotate-12 group-hover:scale-110 transition-transform"></i>
+            </div>
+
+            <!-- Description (Full Width) -->
+            <div class="neo-card bg-white p-6 md:p-8 md:col-span-3 relative">
+                <!-- Decorative Pin -->
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-pop-red border-2 border-black rounded-full shadow-[2px_2px_0_0_#000] z-10">
+                    <div class="w-3 h-3 bg-white rounded-full mx-auto mt-1 opacity-50"></div>
+                </div>
+
+                <h3 class="font-display text-3xl text-black mb-4 uppercase inline-block border-b-4 border-pop-blue pb-1">Deskripsi Quest</h3>
+                <div class="font-semibold text-gray-800 text-lg leading-relaxed space-y-4">
+                    <p>
+                        Persiapkan dirimu untuk event tahunan terbesar kita, <span class="font-bold text-pop-blue bg-pop-blue/10 px-1 border border-black rounded">ARCANA VOL. 2!</span> 
+                        Tahun ini kita membawa kompetisi ke level selanjutnya dengan menggabungkan cabang Olahraga (Futsal, Basket, Voli) dan Seni (Mural, Solo Vocal, Tari Tradisional).
+                    </p>
+                    <p>
+                        Event ini terbuka untuk seluruh perwakilan kelas (Guild). Pastikan tim kalian sudah melakukan registrasi di sekretariat OSIS sebelum batas waktu habis. Junjung tinggi sportivitas dan buktikan siapa yang terbaik di arena!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= RUNDOWN SECTION ================= -->
+        <section class="mt-16 mb-16 relative">
+            <div class="flex items-center gap-4 mb-8">
+                <h2 class="font-display text-4xl md:text-5xl sticker-text-yellow text-outline-fallback uppercase transform -rotate-1" style="color: #fed201; -webkit-text-stroke: 5px black;">
+                    Rundown Kegiatan
+                </h2>
+                <div class="h-2 flex-grow bg-black rounded-full opacity-20 hidden sm:block"></div>
+            </div>
+
+            <!-- Dynamic Rundown Container injected by JS -->
+            <div id="rundown-container" class="transition-all duration-300">
+                <!-- Content will be generated by Javascript based on isRundownDisabled flag -->
+            </div>
+
+        </section>
+    </main>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        /**
+         * 1. PENGATURAN STATUS RUNDOWN
+         * Ubah nilai ini menjadi 'false' jika rundown sudah siap ditampilkan.
+         * Sesuai permintaan, dibuat 'true' (disable) secara default.
+         */
+        let isRundownDisabled = true;
+
+        /**
+         * 2. DUMMY DATA RUNDOWN
+         * Data ini tetap disiapkan di sistem, namun hanya akan dirender
+         * jika isRundownDisabled = false.
+         */
+        const dummyRundown = [
+            { time: "07:00 - 07:30", title: "Registrasi Ulang & Check-in Guild", desc: "Absensi perwakilan kelas di meja registrasi.", icon: "ph-clipboard-text", color: "bg-pop-blue" },
+            { time: "07:30 - 08:30", title: "Opening Ceremony", desc: "Sambutan Kepala Sekolah & Pembukaan ARCANA Vol. 2 secara simbolis.", icon: "ph-confetti", color: "bg-pop-red" },
+            { time: "08:30 - 11:30", title: "Penyisihan Futsal & Basket (Sesi 1)", desc: "Pertandingan babak grup di Lapangan Utama.", icon: "ph-sneaker", color: "bg-pop-yellow" },
+            { time: "11:30 - 12:45", title: "ISHOMA (Istirahat, Sholat, Makan)", desc: "Istirahat dan pengisian stamina player.", icon: "ph-hamburger", color: "bg-gray-400" },
+            { time: "12:45 - 14:30", title: "Lomba Kesenian (Mural & Solo Vocal)", desc: "Berlangsung di Aula & Dinding Selatan.", icon: "ph-palette", color: "bg-pop-pink" },
+            { time: "14:30 - 15:30", title: "Pengumuman Point & Clossing Day 1", desc: "Rekap XP klasemen sementara.", icon: "ph-megaphone", color: "bg-pop-green" }
+        ];
+
+        /**
+         * 3. FUNGSI RENDER RUNDOWN
+         * Mengecek status disable dan merender UI yang sesuai.
+         */
+        function renderRundown() {
+            const container = document.getElementById('rundown-container');
+            container.innerHTML = ""; // Bersihkan kontainer
+
+            if (isRundownDisabled) {
+                // TAMPILAN JIKA RUNDOWN DISABLED
+                container.innerHTML = `
+                    <div class="neo-card bg-gray-100 border-dashed border-4 p-10 flex flex-col items-center justify-center text-center transform rotate-1">
+                        <div class="w-24 h-24 bg-gray-300 border-4 border-black rounded-full flex items-center justify-center mb-6 shadow-[4px_4px_0_0_#000]">
+                            <i class="ph-bold ph-lock-key text-5xl text-gray-600"></i>
+                        </div>
+                        <h3 class="font-display text-3xl text-black uppercase mb-2">Rundown Belum Tersedia!</h3>
+                        <p class="font-bold text-gray-600 text-lg max-w-md">
+                            Panitia (Guild Master) masih meracik timeline quest ini. Harap bersabar dan cek kembali secara berkala, player!
+                        </p>
+                        <div class="mt-6 bg-white border-2 border-black px-4 py-2 font-bold shadow-[2px_2px_0_0_#000] inline-flex items-center gap-2 transform -rotate-2">
+                            <span class="relative flex h-3 w-3">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pop-red opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-3 w-3 bg-pop-red"></span>
+                            </span>
+                            Status: Merumuskan Timeline...
+                        </div>
+                    </div>
+                `;
+            } else {
+                // TAMPILAN JIKA RUNDOWN ENABLED (Memakai dummy data)
+                let rundownHTML = '<div class="relative border-l-4 border-black ml-4 md:ml-6 space-y-8 pb-4">';
+                
+                dummyRundown.forEach((item, index) => {
+                    rundownHTML += `
+                        <div class="relative pl-8 md:pl-10 transform transition-transform hover:translate-x-2">
+                            <!-- Timeline Dot/Icon -->
+                            <div class="absolute -left-[22px] md:-left-[26px] top-0 w-10 h-10 md:w-12 md:h-12 ${item.color} border-4 border-black rounded-full flex items-center justify-center text-white shadow-[2px_2px_0_0_#000] z-10">
+                                <i class="ph-bold ${item.icon} text-xl md:text-2xl"></i>
+                            </div>
+                            
+                            <!-- Timeline Content Card -->
+                            <div class="bg-white border-4 border-black rounded-xl p-4 md:p-5 shadow-[4px_4px_0_0_#000]">
+                                <div class="inline-block bg-black text-pop-yellow font-bold px-3 py-1 rounded-md text-sm mb-2 uppercase tracking-wide">
+                                    <i class="ph-bold ph-clock"></i> ${item.time}
+                                </div>
+                                <h4 class="font-display text-2xl text-black uppercase mb-1 leading-none">${item.title}</h4>
+                                <p class="font-semibold text-gray-700">${item.desc}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                rundownHTML += '</div>';
+                container.innerHTML = rundownHTML;
+            }
+        }
+
+        // Render pertama kali saat halaman dimuat
+        renderRundown();
+    </script>
+</body>
+</html>
