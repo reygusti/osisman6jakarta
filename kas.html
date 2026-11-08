@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Kas OSIS - MAN 6 Jakarta Timur</title>
+    
+    <!-- Fonts for the Sticker Pop-Art Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chewy&family=Fredoka:wght@400;500;600;700&family=Titan+One&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons (Phosphor) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Fredoka', 'sans-serif'],
+                        display: ['Titan One', 'cursive'],
+                        script: ['Chewy', 'cursive'],
+                    },
+                    colors: {
+                        pop: {
+                            blue: '#325ab3',
+                            darkblue: '#234794',
+                            red: '#e53e30',
+                            yellow: '#fed201',
+                            green: '#02a368',
+                            pink: '#e84c8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base styles & Checkerboard Background matching the theme */
+        body {
+            background-color: #325ab3;
+            background-image: conic-gradient(from 0deg, #234794 90deg, transparent 90deg 180deg, #234794 180deg 270deg, transparent 270deg 360deg);
+            background-size: 120px 120px;
+            background-position: 0 0;
+            color: #000;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Neo-Brutalism Utilities */
+        .neo-card {
+            background-color: #ffffff;
+            border: 4px solid #000000;
+            border-radius: 16px;
+            box-shadow: 8px 8px 0px 0px #000000;
+            transition: all 0.2s ease;
+        }
+
+        .neo-btn {
+            border: 4px solid #000000;
+            box-shadow: 6px 6px 0px 0px #000000;
+            transition: all 0.1s ease;
+        }
+
+        .neo-btn:active {
+            transform: translate(6px, 6px);
+            box-shadow: 0px 0px 0px 0px #000000;
+        }
+
+        /* Text Sticker Effects */
+        .sticker-text-blue {
+            color: #234794;
+            -webkit-text-stroke: 8px white;
+            paint-order: stroke fill;
+            text-shadow: 0px 6px 0px rgba(0,0,0,0.15);
+        }
+        .sticker-text-yellow {
+            color: #fed201;
+            -webkit-text-stroke: 6px white;
+            paint-order: stroke fill;
+        }
+
+        @supports not (paint-order: stroke fill) {
+            .text-outline-fallback {
+                text-shadow: 
+                    -4px -4px 0 #fff, 0 -4px 0 #fff, 4px -4px 0 #fff,
+                    4px 0 0 #fff, 4px 4px 0 #fff, 0 4px 0 #fff,
+                    -4px 4px 0 #fff, -4px 0 0 #fff;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #325ab3; border-left: 3px solid #000; }
+        ::-webkit-scrollbar-thumb { background: #fed201; border: 3px solid #000; border-radius: 8px; }
+
+        /* Spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.2);
+            border-top-color: #e53e30;
+            border-radius: 50%;
+            width: 3.5rem;
+            height: 3.5rem;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Modal */
+        .modal { opacity: 0; visibility: hidden; transition: all 0.2s ease-in-out; }
+        .modal.show { opacity: 1; visibility: visible; }
+    </style>
+</head>
+<body class="antialiased font-sans pb-16">
+
+    <!-- Top Navigation -->
+    <nav class="fixed w-full z-40 bg-pop-yellow border-b-4 border-black py-2 shadow-[0_8px_0_0_rgba(0,0,0,1)]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-14 sm:h-16">
+                <!-- Logo & Title -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-pop-red border-2 border-black rounded-full flex items-center justify-center transform rotate-12 shadow-[2px_2px_0_0_#000]">
+                        <span class="text-white font-display text-xl leading-none pt-1">A</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-display text-2xl leading-none text-black tracking-wide">KAS OSIS</span>
+                        <span class="text-[10px] font-bold tracking-widest text-black uppercase bg-white border border-black px-1 mt-0.5 rounded-sm w-max">MAN 6 JKT</span>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-3">
+                    <button onclick="fetchData()" class="neo-btn bg-white px-4 py-2 font-display text-sm sm:text-base text-black rounded-xl flex items-center gap-2 hover:bg-gray-100">
+                        <i class="ph-bold ph-arrows-clockwise text-lg"></i> Refresh
+                    </button>
+                    <button onclick="openModal()" class="neo-btn bg-pop-pink px-4 py-2 font-display text-sm sm:text-base text-white rounded-xl flex items-center gap-2">
+                        <i class="ph-bold ph-upload-simple text-lg"></i> Upload Bukti
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 space-y-8">
+
+        <!-- Error Message Container -->
+        <div id="messageContainer" class="hidden"></div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="neo-card bg-white p-16 flex flex-col items-center justify-center text-center my-12">
+            <div class="spinner mb-4"></div>
+            <h2 class="font-display text-3xl text-black uppercase mb-1">Menyinkronkan Data...</h2>
+            <p class="font-bold text-gray-600">Mengambil catatan keuangan terbaru dari Spreadsheet</p>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboardContent" class="hidden space-y-8">
+            
+            <!-- Statistics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Total Kas -->
+                <div class="neo-card bg-pop-yellow p-6 sm:p-8 flex items-center justify-between">
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="bg-black text-white font-bold px-2 py-0.5 rounded text-xs uppercase">Vault Gold</span>
+                            <span class="font-bold text-black uppercase text-sm">Total Kas Terkumpul</span>
+                        </div>
+                        <h3 class="font-display text-4xl sm:text-5xl text-black tracking-tight" id="totalKas">Rp 0</h3>
+                    </div>
+                    <div class="w-16 h-16 bg-white border-4 border-black rounded-2xl flex items-center justify-center text-pop-blue shadow-[4px_4px_0_0_#000] hidden sm:flex">
+                        <i class="ph-bold ph-coins text-4xl"></i>
+                    </div>
+                </div>
+
+                <!-- Total Siswa -->
+                <div class="neo-card bg-pop-green p-6 sm:p-8 flex items-center justify-between text-white">
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="bg-black text-white font-bold px-2 py-0.5 rounded text-xs uppercase">Guild Members</span>
+                            <span class="font-bold text-white uppercase text-sm">Partisipasi Siswa</span>
+                        </div>
+                        <h3 class="font-display text-4xl sm:text-5xl tracking-tight"><span id="totalSiswa">0</span> <span class="text-2xl font-bold">Siswa</span></h3>
+                    </div>
+                    <div class="w-16 h-16 bg-white border-4 border-black rounded-2xl flex items-center justify-center text-pop-green shadow-[4px_4px_0_0_#000] hidden sm:flex">
+                        <i class="ph-bold ph-users text-4xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Card -->
+            <div class="neo-card bg-white overflow-hidden">
+                <div class="p-6 border-b-4 border-black flex flex-col sm:flex-row justify-between gap-4 items-center bg-gray-50">
+                    <div>
+                        <h3 class="font-display text-3xl text-black uppercase">Rincian Pembayaran Kas</h3>
+                        <p class="font-bold text-gray-600 text-sm">Status setoran kas per siswa tiap bulan.</p>
+                    </div>
+                    <div class="relative w-full sm:w-80">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-black">
+                            <i class="ph-bold ph-magnifying-glass text-xl"></i>
+                        </div>
+                        <input type="text" id="searchInput" placeholder="Cari nama siswa..." class="w-full pl-11 pr-4 py-3 bg-white border-4 border-black font-bold rounded-xl text-sm focus:outline-none shadow-[4px_4px_0_0_#000]">
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto w-full pb-4">
+                    <table class="w-full text-left border-collapse min-w-max">
+                        <thead id="tableHead" class="bg-pop-blue text-white font-display uppercase text-sm border-b-4 border-black">
+                            <!-- JS Generated -->
+                        </thead>
+                        <tbody id="tableBody" class="font-bold text-base divide-y-2 divide-black">
+                            <!-- JS Generated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+        <div class="neo-card bg-white w-full max-w-md overflow-hidden flex flex-col max-h-[95vh] shadow-[12px_12px_0_0_#000]">
+            
+            <div class="px-6 py-4 bg-pop-yellow border-b-4 border-black flex justify-between items-center">
+                <h3 class="font-display text-2xl text-black uppercase">Upload Bukti Kas</h3>
+                <button onclick="closeModal()" class="w-10 h-10 bg-white border-2 border-black rounded-xl flex items-center justify-center text-black font-bold shadow-[2px_2px_0_0_#000]">
+                    <i class="ph-bold ph-x text-xl"></i>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-4">
+                <form id="uploadForm" class="space-y-4">
+                    <div>
+                        <label class="block font-display text-lg text-black mb-1 uppercase">Nama Lengkap Siswa</label>
+                        <input type="text" id="uploadNama" required placeholder="Masukkan nama..." class="w-full bg-white border-4 border-black font-bold rounded-xl px-4 py-3 focus:outline-none shadow-[4px_4px_0_0_#000]">
+                    </div>
+
+                    <div>
+                        <label class="block font-display text-lg text-black mb-1 uppercase">Nominal Pembayaran</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center font-bold text-black">Rp</span>
+                            <input type="text" id="uploadNominal" required placeholder="0" class="w-full pl-12 pr-4 bg-white border-4 border-black font-bold rounded-xl py-3 focus:outline-none shadow-[4px_4px_0_0_#000]">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-display text-lg text-black mb-1 uppercase">Foto Bukti Transfer/Tunai</label>
+                        <div id="dropZone" onclick="document.getElementById('uploadFile').click()" class="border-4 border-black border-dashed rounded-2xl bg-gray-50 hover:bg-pop-yellow/30 p-6 flex flex-col items-center justify-center text-center cursor-pointer shadow-[4px_4px_0_0_#000]">
+                            <div id="uploadPlaceholder" class="flex flex-col items-center">
+                                <i class="ph-bold ph-cloud-arrow-up text-5xl text-black mb-2"></i>
+                                <p class="font-bold text-black">Klik untuk memilih gambar bukti</p>
+                                <p class="text-xs font-bold text-gray-500 mt-1">Format: JPG, PNG</p>
+                            </div>
+                            <div id="imagePreviewContainer" class="hidden flex-col items-center w-full">
+                                <img id="imagePreview" class="max-h-32 object-contain rounded-lg border-2 border-black mb-2" src="" alt="Preview">
+                                <span id="fileName" class="text-xs font-bold bg-white px-2 py-1 border border-black rounded"></span>
+                            </div>
+                            <input id="uploadFile" type="file" class="hidden" accept="image/*" onchange="handleFile(this)">
+                        </div>
+                    </div>
+                </form>
+
+                <div id="uploadSuccess" class="hidden flex-col items-center justify-center py-8 text-center">
+                    <div class="w-16 h-16 bg-pop-green text-white border-4 border-black rounded-full flex items-center justify-center text-3xl mb-4 shadow-[4px_4px_0_0_#000]">
+                        <i class="ph-bold ph-check"></i>
+                    </div>
+                    <h4 class="font-display text-3xl text-black uppercase mb-1">QUEST COMPLETED!</h4>
+                    <p class="font-bold text-gray-600">Bukti pembayaran berhasil dikirim untuk verifikasi.</p>
+                </div>
+            </div>
+
+            <div id="modalFooter" class="px-6 py-4 border-t-4 border-black bg-gray-50 flex justify-end gap-3">
+                <button type="button" onclick="closeModal()" class="neo-btn bg-white px-5 py-2.5 font-display text-black rounded-xl">Batal</button>
+                <button type="button" onclick="submitUpload(event)" id="submitBtn" class="neo-btn bg-pop-pink px-6 py-2.5 font-display text-white rounded-xl">Kirim Bukti</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Logic -->
+    <script>
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwCuAp6f5TJEMp1rvmfLAxEbr0PGoTk-hCOVj7m4_v3yCmZDqiYW1UnqeaB92gsc0Nw/exec";
+        
+        let allData = [];
+        let monthColumns = [];
+        let nameColName = "";
+        let noColName = "";
+
+        const formatRupiah = (number) => {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency', currency: 'IDR', minimumFractionDigits: 0
+            }).format(number || 0);
+        };
+
+        const parseNumber = (str) => {
+            if (!str) return 0;
+            const parsed = parseInt(str.toString().replace(/[^0-9]/g, ''), 10);
+            return isNaN(parsed) ? 0 : parsed;
+        };
+
+        async function fetchData() {
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('dashboardContent').classList.add('hidden');
+            document.getElementById('messageContainer').classList.add('hidden');
+            document.getElementById('searchInput').value = '';
+            
+            try {
+                const response = await fetch(GAS_URL);
+                if (!response.ok) throw new Error("HTTP Error: " + response.status);
+                
+                const result = await response.json();
+                if (result.status === "success") {
+                    processMatrixData(result.data);
+                } else {
+                    throw new Error("Format tidak valid dari server.");
+                }
+            } catch (err) {
+                showError("Gagal mengambil data Spreadsheet. Detail: " + err.message);
+            }
+        }
+
+        function processMatrixData(data) {
+            if (!data || data.length === 0) return showError("Data spreadsheet kosong.");
+
+            const headers = Object.keys(data[0]);
+            noColName = headers.find(h => h.toLowerCase() === 'no') || headers[0];
+            nameColName = headers.find(h => h.toLowerCase().includes('nama')) || headers[1];
+            monthColumns = headers.filter(h => h !== noColName && h !== nameColName);
+
+            let totalKasGlobal = 0;
+            allData = data.map((row, i) => {
+                let total = 0;
+                let r = { ...row, _idx: i + 1 };
+                monthColumns.forEach(m => {
+                    let val = parseNumber(row[m]);
+                    r[m + '_val'] = val;
+                    total += val;
+                });
+                r.total = total;
+                totalKasGlobal += total;
+                return r;
+            });
+
+            document.getElementById('totalKas').innerText = formatRupiah(totalKasGlobal);
+            document.getElementById('totalSiswa').innerText = allData.length;
+
+            renderTable(allData);
+
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('dashboardContent').classList.remove('hidden');
+            setupSearch();
+        }
+
+        function renderTable(data) {
+            const thead = document.getElementById('tableHead');
+            const tbody = document.getElementById('tableBody');
+            
+            let thHTML = `<tr>
+                <th class="px-4 py-4 md:sticky md:left-0 bg-pop-blue md:z-10 border-r-4 border-black text-center w-[60px]">#</th>
+                <th class="px-4 py-4 md:sticky md:left-[60px] bg-pop-blue md:z-10 border-r-4 border-black min-w-[200px]">Nama Siswa</th>`;
+            
+            monthColumns.forEach(month => { 
+                thHTML += `<th class="px-4 py-4 text-center border-r-2 border-black whitespace-nowrap">${month}</th>`; 
+            });
+            thHTML += `<th class="px-5 py-4 md:sticky md:right-0 bg-pop-yellow text-black md:z-10 border-l-4 border-black text-right min-w-[140px]">Total</th></tr>`;
+            thead.innerHTML = thHTML;
+
+            tbody.innerHTML = '';
+            if(data.length === 0) return tbody.innerHTML = `<tr><td colspan="${monthColumns.length + 3}" class="p-8 text-center font-bold text-gray-500">Data tidak ditemukan.</td></tr>`;
+
+            data.forEach((row, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-pop-yellow/20 bg-white transition-colors group";
+                
+                let tdHTML = `
+                    <td class="px-4 py-3.5 text-center font-bold md:sticky md:left-0 bg-white group-hover:bg-pop-yellow/20 border-r-4 border-black">${row[noColName] || row._idx}</td>
+                    <td class="px-4 py-3.5 font-bold md:sticky md:left-[60px] bg-white group-hover:bg-pop-yellow/20 border-r-4 border-black">${row[nameColName] || '-'}</td>
+                `;
+
+                monthColumns.forEach(month => {
+                    const val = row[month + '_val'];
+                    if (val > 0) {
+                        const shortVal = (val % 1000 === 0) ? (val/1000) + 'k' : formatRupiah(val);
+                        tdHTML += `<td class="px-4 py-3.5 text-center border-r-2 border-black"><span class="inline-flex px-2.5 py-1 rounded-md bg-pop-green text-white text-xs font-bold border-2 border-black shadow-[2px_2px_0_0_#000]">${shortVal}</span></td>`;
+                    } else {
+                        tdHTML += `<td class="px-4 py-3.5 text-center text-gray-300 font-black border-r-2 border-black">-</td>`;
+                    }
+                });
+
+                tdHTML += `<td class="px-5 py-3.5 text-right font-black text-pop-blue md:sticky md:right-0 bg-white group-hover:bg-pop-yellow/20 border-l-4 border-black">${formatRupiah(row.total)}</td>`;
+                tr.innerHTML = tdHTML;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function setupSearch() {
+            const input = document.getElementById('searchInput');
+            input.replaceWith(input.cloneNode(true));
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                const q = e.target.value.toLowerCase().trim();
+                renderTable(q === "" ? allData : allData.filter(r => r[nameColName]?.toLowerCase().includes(q)));
+            });
+        }
+
+        function showError(msg) {
+            document.getElementById('loadingState').classList.add('hidden');
+            const c = document.getElementById('messageContainer');
+            c.classList.remove('hidden');
+            c.innerHTML = `<div class="neo-card bg-pop-red text-white p-6 mb-6"><span class="font-display text-2xl block mb-1">ERROR!</span> ${msg} <br><button onclick="fetchData()" class="mt-4 neo-btn bg-white text-black px-4 py-2 font-bold rounded-lg text-sm">Coba Lagi</button></div>`;
+        }
+
+        document.getElementById('uploadNominal').addEventListener('input', function(e) {
+            let value = this.value.replace(/[^0-9]/g, '');
+            this.value = value ? new Intl.NumberFormat('id-ID').format(value) : '';
+        });
+
+        function openModal() {
+            document.getElementById('uploadModal').classList.add('show');
+            document.getElementById('uploadForm').reset();
+            clearFile(new Event('mock'));
+            document.getElementById('uploadForm').classList.remove('hidden');
+            document.getElementById('modalFooter').classList.remove('hidden');
+            document.getElementById('uploadSuccess').classList.add('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('uploadModal').classList.remove('show');
+        }
+
+        let selectedFile = null;
+        function handleFile(input) {
+            if (input.files && input.files[0]) {
+                selectedFile = input.files[0];
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('imagePreview').src = e.target.result;
+                    document.getElementById('fileName').innerText = selectedFile.name;
+                    document.getElementById('uploadPlaceholder').classList.add('hidden');
+                    document.getElementById('imagePreviewContainer').classList.remove('hidden');
+                    document.getElementById('imagePreviewContainer').classList.add('flex');
+                }
+                reader.readAsDataURL(selectedFile);
+            }
+        }
+
+        function clearFile(e) {
+            e.stopPropagation();
+            document.getElementById('uploadFile').value = '';
+            selectedFile = null;
+            document.getElementById('uploadPlaceholder').classList.remove('hidden');
+            document.getElementById('imagePreviewContainer').classList.add('hidden');
+            document.getElementById('imagePreviewContainer').classList.remove('flex');
+        }
+
+        function submitUpload(e) {
+            e.preventDefault();
+            const nama = document.getElementById('uploadNama').value;
+            const nom = document.getElementById('uploadNominal').value;
+            
+            if(!nama || !nom || !selectedFile) {
+                const btn = document.getElementById('submitBtn');
+                const oriText = btn.innerHTML;
+                btn.innerHTML = 'Lengkapi Data!';
+                setTimeout(() => { btn.innerHTML = oriText; }, 2000);
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.innerHTML = 'Mengirim...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                document.getElementById('uploadForm').classList.add('hidden');
+                document.getElementById('modalFooter').classList.add('hidden');
+                document.getElementById('uploadSuccess').classList.remove('hidden');
+                document.getElementById('uploadSuccess').classList.add('flex');
+                
+                btn.innerHTML = 'Kirim Bukti';
+                btn.disabled = false;
+                
+                setTimeout(closeModal, 3000);
+            }, 1500);
+        }
+
+        window.addEventListener('DOMContentLoaded', fetchData);
+    </script>
+</body>
+</html>
